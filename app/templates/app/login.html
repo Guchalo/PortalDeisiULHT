@@ -1,0 +1,75 @@
+{% extends "app/base.html" %}
+
+{% block style %}
+
+main {
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+    justify-contents: center;
+    background: #BEC3C6;
+}
+
+form {
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+    justify-contents: center;
+    max-width: 20ch;
+}
+
+input {
+    display: block;
+    padding:5px 10px;
+    margin: 5px;
+    border: 2px solid #b5073d;
+    width: 100%;
+    border-radius: 20px;
+}
+input[type='submit'] {
+    color: white;
+    background: #b5073d;
+    width: 113%;
+}
+
+a {
+    color: gray;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+
+{% endblock style %}
+
+
+
+{% block main %}
+
+<body style="background-color: #BEC3C6;">
+
+<h3>Login</h3>
+
+{% if not request.user.is_authenticated %}
+  {{ message }}
+{% endif %}
+
+<form action="{% url 'horarios:login' %}" method="POST">
+    {% csrf_token %}
+    <input type="text" name="credential" placeholder="username ou email">
+    <input type="password" name="password" placeholder="palavra-passe">
+    <input type="submit" value="Entrar">
+</form>
+<p style="text-align:center; margin-top:3em; font-style:italic; font-weight:400;">
+    Caso seja a primeira vez que acede a esta aplicação
+    <br>
+    ou se tenha esquecido da palavra-passe, 
+    <br>
+    faça a <a style = "font-size:1em; font-weight:bold; color: #b5073d;" href="{% url 'horarios:fogot_password' %}">recuperação da palavra-passe</a>. Use o email onde recebe as mensagens do Moodle.
+    <br>
+    <br>
+    Perante qualquer dificuldade <a style = "font-size:1em; font-weight:bold; color: #b5073d;" href="mailto:lucio.studer@ulusofona.pt">contacte-nos</a>.</p>
+
+
+
+</body>
+
+{% endblock main %}

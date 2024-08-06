@@ -1,0 +1,208 @@
+{% extends "app/base.html" %}
+
+{% block style %}
+
+main {
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+    justify-contents: center;
+}
+
+div.disciplina  {
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+    width: 100%;
+}
+h3 {
+    margin-bottom: 10px;
+    color: white;
+    }
+
+h2 {
+    color: white;
+    }
+
+
+.disciplina input {
+    display:inline-block;
+
+    font-size: 0.85rem;
+    padding: 5px 5px;
+    border-radius: 50px;
+    color: #BEC3C6;
+
+    text-decoration: none;
+
+
+    background: #b5073d;
+
+    transition: 0.3s;
+    font-weight: bold;
+
+    border: 1px solid #b5073d;
+    border-radius: 20px;
+
+}
+
+.disciplina input:hover {
+    opacity: 1;
+    background-color: #BEC3C6;
+    border: 1px solid #BEC3C6;
+    color: #b5073d
+
+
+}
+
+a.elimina {
+    display:inline-block;
+    color: black;
+    font-size: 0.85rem;
+    padding: 2px 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    background: yellow;
+    border: 1px solid black;
+    text-decoration: none;
+}
+
+a.sessão {
+    display:inline-block;
+    color: black;
+    font-size: 0.85rem;
+    padding: 2px 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    background: white;
+    border: 1px solid black;
+    text-decoration: none;
+}
+
+td.turma span:nth-child(2) {
+    display:none;
+}
+
+header nav a {
+    text-decoration: none;
+    padding: 1px;
+    margin-right:1px;
+    color:white;
+}
+
+body {
+
+margin: 0;
+
+width: 100%;
+height: 100%;
+background-size: cover;
+background-position: center center;
+background-repeat: no-repeat;
+background-attachment: fixed;
+background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+url(/static/app/licenciatura-engenharia-informatica-lisboa_600.jpg);
+}
+
+h1,h2,h3 {color:white;}
+
+{% endblock style %}
+
+
+{% block main %}
+
+<body style="background-color: #b5073d;">
+
+<h2>Área do Mentorando</h2>
+
+{% if vazio == 0 %}
+    <h3>Não existe nenhuma mentoria</h3>
+{% endif %}
+
+{% if aluno == "admin" %}
+    {% for mentorando_info in mentorandos_info %}
+       <h3>{{ mentorando_info.mentorando}}</h3>
+        {% for mentorandia in mentorando_info.mentorandias %}
+        <div class="disciplina" style="background-color: whitesmoke; border: 1px solid black;">
+            <b>{{ mentorandia.disciplina }}</b>
+            <div style="display: flex; align-items: center; gap: 10px;">
+
+            {% if mentorandia.mentor.aluno %}
+
+                <a style="text-decoration: none;"  href="{% url 'perfil' mentorandia.mentor.aluno.id %}">{{ mentorandia.mentor.aluno }}</a>
+            {% else %}
+                Sem mentor
+            {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    {% endfor %}
+{% else %}
+    {% for mentorando_info in mentorandos_info %}
+                {% for mentorandia in mentorando_info.mentorandias %}
+                <div class="disciplina" style="background-color: whitesmoke; border: 1px solid black;">
+                        {% if mentorandia.mentorando.aluno and not mentorandia.mentorando.ativo %}
+                        <b>{{ mentorandia.disciplina }}</b>
+
+                            <div style="color: gray;">
+
+                            {% if mentorandia.mentor.aluno %}
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <a style="text-decoration: none;"  href="{% url 'perfil' mentorandia.mentor.aluno.id %}">{{ mentorandia.mentor.aluno }}</a>
+                                <a class="sessão" style="margin-left: auto;" href="{% url 'sessoes' mentorandia.mentor.id  mentorandia.mentorando.id 1 %}">Sessões</a>
+                                <a class="elimina" style="margin-right: 10px; background-color: green;color:white;" href="{% url 'remover_mentorando' mentorandia.mentorando.id %}">Ativar</a>
+                                </div>
+                            {% else %}
+                                <br>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    Sem mentor
+                                <a class="elimina" style="background-color: red; margin-left: auto;margin-right: 10px;" href="{% url 'remover_mentorando' mentorandia.mentorando.id %}">Remover</a>
+                                </div>
+                            {% endif %}
+                                </div>
+                            {% else %}
+                            <b>{{ mentorandia.disciplina }}</b>
+
+                            {% if mentorandia.mentor.aluno %}
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <a style="text-decoration: none;" href="{% url 'perfil' mentorandia.mentor.aluno.id %}">{{ mentorandia.mentor.aluno }}</a>
+                                <br>
+                                <a class="sessão" style="margin-left: auto;" href="{% url 'sessoes' mentorandia.mentor.id  mentorandia.mentorando.id 1 %}">Sessões</a>
+                                <a class="elimina" style="margin-right: 10px;" href="{% url 'remover_mentorando' mentorandia.mentorando.id %}">Suspender</a>
+                            </div>
+                            {% else %}
+                            <br>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    Sem mentor
+                                <a class="elimina" style="color:white;background-color: red; margin-left: auto;margin-right: 10px;" href="{% url 'remover_mentorando' mentorandia.mentorando.id %}">Remover</a>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+    {% endfor %}
+    <h3>Adicionar disciplina</h3>
+            <div class="disciplina" style="background-color: whitesmoke; border: 1px solid black;">
+                <form action="{% url 'cria_mentorando' %}" method='POST'>
+
+                    {% csrf_token %}
+
+                    <input type="hidden" name="mentorando_aluno_id"  value="{{ aluno.id }}" >
+
+                    <select  name = 'disciplina_id' style="padding:5px; width:100%; margin-bottom: 5px;" required>
+                        <option value="">Selecione a disciplina pretendida</option>
+                        {% for disciplina in disciplinas %}
+                                <option value = "{{ disciplina.id }}"> {{ disciplina.nome }} </option>
+                        {% endfor %}
+                    </select>
+
+                    <input style="width: 100%;"type="submit" value="+Adicionar">
+
+                </form>
+            </div>
+
+    </ul>
+{% endif %}
+</body>
+
+{% endblock main %}
